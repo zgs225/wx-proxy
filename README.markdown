@@ -7,3 +7,9 @@
 ## OAuth2
 
 访问链接 `${部署域名}/connect/oauth2/authorize?redirect_to=REDIRECT_TO`
+
+## 变更记录
+
+### v1.0.0
+
++ 完成基本的代理功能
