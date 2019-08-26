@@ -54,9 +54,27 @@ func (s *wxProxyHTTPServer) NewHandler() http.Handler {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/connect/oauth2/authorize", s.newAuthorizeHandleFunc())
+	mux.HandleFunc("/redirect", s.newRedirectHandleFunc())
 	mux.HandleFunc("/", s.newWebRootHandleFunc())
 
 	return mux
+}
+
+func (s *wxProxyHTTPServer) newRedirectHandleFunc() http.HandlerFunc {
+	return func(w http.ResponseWriter, request *http.Request) {
+		cookie, err := request.Cookie(CookieName_Redirect)
+		if err != nil {
+			http.Error(w, "缺少重定向地址", http.StatusBadRequest)
+			return
+		}
+		redirectTo, err := url.Parse(cookie.Value)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		redirectTo.RawQuery = request.URL.Query().Encode()
+		http.Redirect(w, request, redirectTo.String(), http.StatusTemporaryRedirect)
+	}
 }
 
 func (s *wxProxyHTTPServer) newAuthorizeHandleFunc() http.HandlerFunc {
