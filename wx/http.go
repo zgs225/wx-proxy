@@ -27,6 +27,7 @@ type wxProxyHTTPServer struct {
 	webroot    string
 	fs         http.Handler
 	allowHosts []string
+	host       string // 重定向到的域名
 }
 
 // NewWXProxyHTTPServer
@@ -40,6 +41,10 @@ func NewWXProxyHTTPServer() HTTPServer {
 	if len(webroot) == 0 {
 		log.Panic("缺少WEB根目录路径配置")
 	}
+	host := viper.GetString("host")
+	if len(host) == 0 {
+		log.Panic("缺少重定向域名配置")
+	}
 	allowHosts := viper.GetStringSlice("allow_hosts")
 
 	return &wxProxyHTTPServer{
@@ -47,6 +52,7 @@ func NewWXProxyHTTPServer() HTTPServer {
 		webroot:    webroot,
 		fs:         http.FileServer(http.Dir(webroot)),
 		allowHosts: allowHosts,
+		host:       host,
 	}
 }
 
@@ -91,7 +97,7 @@ func (s *wxProxyHTTPServer) newAuthorizeHandleFunc() http.HandlerFunc {
 
 			cookie http.Cookie
 
-			proxyRedirect = request.URL.Scheme + "://" + request.URL.Host + "/redirect"
+			proxyRedirect = s.host + "/redirect"
 			authorizeUri  *url.URL // 重定向微信链接
 			query         = make(url.Values)
 		)
