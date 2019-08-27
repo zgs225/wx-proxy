@@ -78,6 +78,11 @@ func (s *wxProxyHTTPServer) newRedirectHandleFunc() http.HandlerFunc {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
+		http.SetCookie(w, &http.Cookie{
+			Name:   CookieName_Redirect,
+			Value:  cookie.Value,
+			MaxAge: -1,
+		})
 		redirectTo.RawQuery = request.URL.Query().Encode()
 		http.Redirect(w, request, redirectTo.String(), http.StatusTemporaryRedirect)
 	}
@@ -152,6 +157,7 @@ func (s *wxProxyHTTPServer) newAuthorizeHandleFunc() http.HandlerFunc {
 			Name:     CookieName_Redirect,
 			Value:    redirectTo,
 			HttpOnly: true,
+			MaxAge:   300,
 		}
 
 		http.SetCookie(w, &cookie)
