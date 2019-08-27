@@ -81,6 +81,7 @@ func (s *wxProxyHTTPServer) newRedirectHandleFunc() http.HandlerFunc {
 		http.SetCookie(w, &http.Cookie{
 			Name:   CookieName_Redirect,
 			Value:  cookie.Value,
+			Path:   "/",
 			MaxAge: -1,
 		})
 		redirectTo.RawQuery = request.URL.Query().Encode()
@@ -156,6 +157,7 @@ func (s *wxProxyHTTPServer) newAuthorizeHandleFunc() http.HandlerFunc {
 		cookie = http.Cookie{
 			Name:     CookieName_Redirect,
 			Value:    redirectTo,
+			Path:     "/",
 			HttpOnly: true,
 			MaxAge:   300,
 		}
