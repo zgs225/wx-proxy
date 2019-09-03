@@ -8,7 +8,7 @@
 
 ```
 get get -u github.com/zgs225/wx-proxy
-wxproxy --config /path/to/config
+wxproxy serve --config /path/to/config
 ```
 
 ## 配置
