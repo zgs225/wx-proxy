@@ -163,7 +163,7 @@ func (s *wxProxyHTTPServer) newAuthorizeHandleFunc() http.HandlerFunc {
 		}
 
 		http.SetCookie(w, &cookie)
-		http.Redirect(w, request, authorizeUri.String(), http.StatusTemporaryRedirect)
+		http.Redirect(w, request, authorizeUri.String(), http.StatusFound)
 
 		return
 	errret:
