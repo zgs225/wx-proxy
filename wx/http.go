@@ -85,7 +85,7 @@ func (s *wxProxyHTTPServer) newRedirectHandleFunc() http.HandlerFunc {
 			MaxAge: -1,
 		})
 		redirectTo.RawQuery = request.URL.Query().Encode()
-		http.Redirect(w, request, redirectTo.String(), http.StatusTemporaryRedirect)
+		http.Redirect(w, request, redirectTo.String(), http.StatusFound)
 	}
 }
 
